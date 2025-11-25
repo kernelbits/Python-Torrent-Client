@@ -1,6 +1,8 @@
 import hashlib
 from benCoding import TorrentDecoder, bencode
 from tracker import get_peers, parse_peers_blob
+from client import PeerClient
+
 
 def main():
     # 1. Open torrent file
@@ -32,6 +34,19 @@ def main():
     print(f"Found {len(peers)} peers:")
     for ip, port in peers[:5]:
         print(f"  {ip}:{port}")
+
+    my_peer_id = b'-PC0001-' + b'123456789012' # 20 bytes
+    for ip, port in peers:
+        # Create a client for this peer
+        client = PeerClient(ip, port, info_hash, my_peer_id)
+        
+        # Try to connect
+        if client.connect():
+            # IF SUCCESS: Stop looping! We found a friend.
+            print(f"Connected to {ip}")
+            break
+            
+
 
 if __name__ == "__main__":
     main()
