@@ -4,7 +4,7 @@ from tracker import get_peers, parse_peers_blob
 
 def main():
     # 1. Open torrent file
-    with open('ubuntu_test.torrent', 'rb') as f:
+    with open('debian.torrent', 'rb') as f:
         file_content = f.read()
 
     # 2. Decode metainfo (Use bencoding.py)

@@ -38,13 +38,32 @@ def get_peers(tracker_url, info_hash, file_length):
     # use urllib.request.urlopen(url)
     # Check if response.status == 200
     # response_data = response.read()
+    with  urllib.request.urlopen(url) as response:
+        if response.status != 200:
+            raise ConnectionError(f"Tracker failed with status code : {response.status}")
+        response_data = response.read()
 
+    
     # 4. Decode Response
     # Use TorrentDecoder(response_data).decode()
-    
+    response_decode = TorrentDecoder(response_data).decode()
+    print("Tracker Response Keys : ",response_decode.keys())
+    if b'failur ereason' in response_decode:
+        failure_msg = response_decode[b'failure reason'].decode("utf-8")
+        raise ConnectionError(f"Tracker Error : {failure_msg}")
+    print("DEBUG RESPONSE:", response_decode)
+
+
     # 5. Return the binary blob from the dictionary (key is b'peers')
-    pass
+    return response_decode[b'peers']
 
 def parse_peers_blob(peers_blob):
-    # ... (Logic as discussed before: struct and socket) ...
-    pass
+    peers = []
+    if len(peers_blob) % 6 != 0:
+        raise ValueError("Data is not Correct")
+    for i in range(0,len(peers_blob),6):
+        chunk = peers_blob[i: i+6]
+        ip = socket.inet_ntoa(chunk[0:4])
+        port = struct.unpack("!H", chunk[4:6])[0]
+        peers.append((ip, port))
+    return peers 
