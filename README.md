@@ -59,7 +59,7 @@ docker run --rm raw-torrent
 Requires Python 3.9+.
 ```bash
 # Clone the repo
-git clone https://github.com/YOUR_USERNAME/YOUR_REPO.git
+git clone https://github.com/kernelbits/Python-Torrent-Client.git
 
 # Navigate to directory
 cd python-torrent
